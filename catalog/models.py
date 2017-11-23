@@ -1,4 +1,7 @@
+from datetime import date
+
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Genre(models.Model):
@@ -28,6 +31,13 @@ class Book(models.Model):
     genre = models.ManyToManyField(Genre, help_text="Select a genre for this book")
     # ManyToManyField used because genre can contain many books. Books can cover many genres.
     # Genre class has already been defined so we can specify the object above.
+
+    class Meta:
+        #cuando haya lista de cosas paginadas es importante darle un orden,
+        #sino da error, en vistas basadas en clases no se si no toma automaticamente algo
+        #UnorderedObjectListWarning: Pagination may yield inconsistent
+        #results with an unordered object_list:
+        ordering = ["title"]
 
     def display_genre(self):
         """
@@ -61,6 +71,7 @@ class BookInstance(models.Model):
     book = models.ForeignKey('Book', on_delete=models.SET_NULL, null=True)
     imprint = models.CharField(max_length=200)
     due_back = models.DateField(null=True, blank=True)
+    borrower = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     LOAN_STATUS = (
         ('m', 'Maintenance'),
@@ -73,7 +84,13 @@ class BookInstance(models.Model):
 
     class Meta:
         ordering = ["due_back"]
+        permissions = (("can_mark_returned", "Set book as returned"),)
 
+    @property
+    def is_overdue(self):
+        if self.due_back and date.today() > self.due_back:
+            return True
+        return False
 
     def __str__(self):
         """

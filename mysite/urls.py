@@ -23,7 +23,10 @@ urlpatterns = [
     url(r'^polls/', include('polls.urls')),
     url(r'^catalog/', include('catalog.urls')),
 ]
-
+#Add Django site authentication urls (for login, logout, password management)
+urlpatterns += [
+    url(r'^accounts/', include('django.contrib.auth.urls')),
+]
 #Add URL maps to redirect the base URL to our application
 from django.views.generic import RedirectView
 urlpatterns += [
