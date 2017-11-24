@@ -24,7 +24,9 @@
       <ul class="sidebar-nav">
           <li><a href="{% url 'index' %}">Home of Library</a></li>
           <li><a href="{% url 'books' %}">All books</a></li>
-          <li><a href="">All authors</a></li>
+          <li><a href="{% url 'authors' %}">All authors</a></li>
+          <li><a href="{% url 'author_create' %}">Create an author</a></li>
+          <li><a href="{% url 'author_update' pk=1%}">Update an author</a></li>
           <b>
             <li><a href="{% url 'polls:index' %}">Polls app index</a></li>
             <li><a href="{% url 'admin:index' %}">Admin backend</a></li>
